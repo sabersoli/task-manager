@@ -35,7 +35,7 @@ export class HelloWorld {
         return this.tasks
     }
 
-    @Post("tasks")
+    @Post("task")
     async post(@Body() task: Task, @Res() response: Response) {
         task = { ...task, id: uuid.v4() }
         const validationErrors = await validateTask(task)
@@ -53,10 +53,10 @@ export class HelloWorld {
         if(!currentTask) throw new NotFoundError(`task with ID ${id} not found`)
         this.tasks.find((item, index) => {
             if(item.id === id) {
-                this.tasks[index] = {...task}
+                this.tasks[index] = {...task, id: id}
             }
         })
-        return "Task updated"        
+        return response.status(200).json({message: "Task successfully updated"})       
 
     }
 
@@ -65,5 +65,14 @@ export class HelloWorld {
     async delete() {
         this.tasks = []
         return "deleting tasks..."
+    }
+
+    @Delete("task/:id")
+    async deleteTask(@Param("id") id: string, @Res() response: Response) {
+        console.log("request eingegangen!")
+        const currentTask = this.tasks.find((item) => item.id === id)
+        if(!currentTask) throw new NotFoundError(`task with ID ${id} not found`)
+        this.tasks.splice(this.tasks.indexOf(currentTask), 1)
+        return response.status(205).json({message: "task was deleted"})
     }
 }
