@@ -32,7 +32,7 @@ export class HelloWorld {
 
     @Get("tasks")
     async get(): Promise<Task[]> {
-        return this.tasks
+        return this.tasks 
     }
 
     @Post("task")
